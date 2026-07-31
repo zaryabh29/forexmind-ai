@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ForexMind AI PRO - Universal Trading Terminal</title>
+    <title>ForexMind AI PRO - Institutional Trading Terminal</title>
 
     <!-- iOS Native App Meta -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="ForexMind AI">
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#0b0f19">
+    <meta name="theme-color" content="#090d16">
 
     <!-- ApexCharts CDN -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
@@ -20,82 +20,80 @@
 </head>
 <body>
 
-    <!-- Header Bar (Natural Scrolling) -->
+    <!-- Header & Navigation Bar -->
     <header class="app-header">
-        <div class="header-top">
-            <div class="brand-badge">
-                <div class="brand-icon">FX</div>
-                <div>
-                    <div class="brand-title">ForexMind AI</div>
-                    <div class="brand-sub">QUANTITATIVE PRO</div>
-                </div>
-            </div>
-
-            <div class="header-actions">
-                <div id="ws-status-badge" class="badge-live offline">CONNECTING</div>
-                <button id="theme-toggle-btn" class="theme-toggle-btn">🌙 Dark</button>
+        <div class="brand-badge">
+            <div class="brand-icon">FX</div>
+            <div>
+                <div class="brand-title">ForexMind AI</div>
+                <div class="brand-sub">QUANTITATIVE PRO</div>
             </div>
         </div>
 
-        <!-- Controls Bar -->
-        <div class="controls-bar">
-            <div class="control-group">
-                <label>Symbol</label>
-                <select id="select-symbol" class="select-pill">
-                    <option value="EURUSD">EUR/USD</option>
-                    <option value="GBPUSD">GBP/USD</option>
-                    <option value="USDJPY">USD/JPY</option>
-                    <option value="XAUUSD">XAU/USD (Gold)</option>
-                    <option value="AUDUSD">AUD/USD</option>
-                </select>
-            </div>
+        <!-- Desktop Horizontal Navigation Tabs -->
+        <nav class="desktop-tabs-wrapper">
+            <button class="tab-btn active" data-sec="sec-signal">📈 Trading Terminal</button>
+            <button class="tab-btn" data-sec="sec-matrix">📊 Market Matrix</button>
+            <button class="tab-btn" data-sec="sec-risk">🛡️ Risk Manager</button>
+            <button class="tab-btn" data-sec="sec-backtest">📉 Backtest Studio</button>
+            <button class="tab-btn" data-sec="sec-news">📰 AI Radar</button>
+            <button class="tab-btn" data-sec="sec-ea">⚙️ Integrations</button>
+        </nav>
 
-            <div class="control-group">
-                <label>Timeframe</label>
-                <select id="select-timeframe" class="select-pill">
-                    <option value="M15" selected>M15 (Intraday)</option>
-                    <option value="M5">M5 (Scalp)</option>
-                    <option value="H1">H1 (Swing)</option>
-                </select>
-            </div>
-
-            <div class="control-group">
-                <label>Signal Mode</label>
-                <select id="select-direction" class="select-pill">
-                    <option value="AUTO" selected>Auto</option>
-                    <option value="BUY">BUY</option>
-                    <option value="SELL">SELL</option>
-                </select>
-            </div>
-
-            <div class="control-group">
-                <label>Balance ($)</label>
-                <input type="number" id="input-balance" class="number-input" value="1000" step="100" style="width: 100px;">
-            </div>
-
-            <div class="control-group">
-                <label>Risk (%)</label>
-                <input type="number" id="input-risk" class="number-input" value="1.0" step="0.5" style="width: 80px;">
-            </div>
-
-            <button id="btn-analyze" class="btn-primary" style="margin-top: 15px;">⚡ Analyze Signal</button>
+        <div class="header-actions">
+            <div id="ws-status-badge" class="badge-live offline">CONNECTING</div>
+            <button id="theme-toggle-btn" class="theme-toggle-btn">🌙 Dark</button>
         </div>
     </header>
 
-    <!-- Desktop Navigation Tabs Bar (Horizontal Bar for Laptop/Desktop) -->
-    <nav class="desktop-tabs">
-        <button class="tab-btn active" data-sec="sec-signal">📈 Trading Terminal</button>
-        <button class="tab-btn" data-sec="sec-matrix">📊 Market Matrix</button>
-        <button class="tab-btn" data-sec="sec-risk">🛡️ Risk Manager</button>
-        <button class="tab-btn" data-sec="sec-backtest">📉 Backtest Studio</button>
-        <button class="tab-btn" data-sec="sec-news">📰 AI Radar</button>
-        <button class="tab-btn" data-sec="sec-ea">⚙️ Integrations</button>
-    </nav>
+    <!-- Compact Controls Ribbon -->
+    <div class="controls-bar">
+        <div class="control-item">
+            <span class="control-label">Symbol</span>
+            <select id="select-symbol" class="select-input">
+                <option value="EURUSD">EUR/USD</option>
+                <option value="GBPUSD">GBP/USD</option>
+                <option value="USDJPY">USD/JPY</option>
+                <option value="XAUUSD">XAU/USD (Gold)</option>
+                <option value="AUDUSD">AUD/USD</option>
+            </select>
+        </div>
+
+        <div class="control-item">
+            <span class="control-label">Timeframe</span>
+            <select id="select-timeframe" class="select-input">
+                <option value="M15" selected>M15 (Intraday)</option>
+                <option value="M5">M5 (Scalp)</option>
+                <option value="H1">H1 (Swing)</option>
+            </select>
+        </div>
+
+        <div class="control-item">
+            <span class="control-label">Signal Mode</span>
+            <select id="select-direction" class="select-input">
+                <option value="AUTO" selected>Auto</option>
+                <option value="BUY">BUY Only</option>
+                <option value="SELL">SELL Only</option>
+            </select>
+        </div>
+
+        <div class="control-item">
+            <span class="control-label">Balance ($)</span>
+            <input type="number" id="input-balance" class="number-input" value="1000" step="100" style="width: 90px;">
+        </div>
+
+        <div class="control-item">
+            <span class="control-label">Risk (%)</span>
+            <input type="number" id="input-risk" class="number-input" value="1.0" step="0.5" style="width: 75px;">
+        </div>
+
+        <button id="btn-analyze" class="btn-primary">⚡ Analyze Signal</button>
+    </div>
 
     <!-- Main Container -->
     <main class="app-container">
 
-        <!-- Section 1: Signal & Chart Terminal -->
+        <!-- Section 1: Trading Terminal (ACTIVE BY DEFAULT) -->
         <section id="sec-signal" class="app-section active">
             <div class="grid-main">
                 <!-- Left: Hero Signal Card & XAI -->
@@ -141,23 +139,25 @@
                 </div>
 
                 <!-- Right: Candlestick Chart Card -->
-                <div class="card-section">
-                    <div class="card-title">Live Price Action</div>
-                    <div id="candlestick-chart" style="height: 400px;"></div>
+                <div class="card-panel">
+                    <div class="card-panel-head">
+                        <span>Live Price Action & Candlesticks</span>
+                    </div>
+                    <div id="candlestick-chart" style="height: 420px;"></div>
                 </div>
             </div>
         </section>
 
-        <!-- Section 2: Market Confluence Matrix -->
+        <!-- Section 2: Market Matrix (HIDDEN BY DEFAULT) -->
         <section id="sec-matrix" class="app-section">
-            <div class="card-section">
-                <div class="card-title">Multi-Timeframe Matrix</div>
+            <div class="card-panel">
+                <div class="card-panel-head">Multi-Timeframe Alignment Matrix</div>
                 <div class="table-wrapper">
                     <table class="mobile-table">
                         <thead>
                             <tr>
                                 <th>Timeframe</th>
-                                <th>Price</th>
+                                <th>Close Price</th>
                                 <th>Trend Direction</th>
                                 <th>RSI (14)</th>
                                 <th>State</th>
@@ -169,22 +169,22 @@
             </div>
         </section>
 
-        <!-- Section 3: Risk Calculator -->
+        <!-- Section 3: Risk Manager (HIDDEN BY DEFAULT) -->
         <section id="sec-risk" class="app-section">
-            <div class="card-section" style="max-width: 550px; margin: 0 auto;">
-                <div class="card-title">Position Risk Calculator</div>
+            <div class="card-panel" style="max-width: 550px; margin: 0 auto;">
+                <div class="card-panel-head">Position Risk & Lot Size Calculator</div>
                 <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;">
                     <div>
                         <label class="level-label">Account Balance ($)</label>
-                        <input type="number" id="risk-balance" class="select-pill" value="1000" style="text-align: left;">
+                        <input type="number" id="risk-balance" class="select-input" value="1000" style="width: 100%;">
                     </div>
                     <div>
                         <label class="level-label">Risk Per Trade (%)</label>
-                        <input type="number" id="risk-percent" class="select-pill" value="1.0" step="0.5" style="text-align: left;">
+                        <input type="number" id="risk-percent" class="select-input" value="1.0" step="0.5" style="width: 100%;">
                     </div>
                     <div>
                         <label class="level-label">Stop Loss Distance (Pips)</label>
-                        <input type="number" id="risk-sl-pips" class="select-pill" value="25" style="text-align: left;">
+                        <input type="number" id="risk-sl-pips" class="select-input" value="25" style="width: 100%;">
                     </div>
                 </div>
 
@@ -192,24 +192,24 @@
 
                 <div class="level-card" style="margin-top: 16px;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-                        <span class="level-label">Suggested Lot:</span>
+                        <span class="level-label">Suggested Lot Size:</span>
                         <strong id="res-risk-lot" style="font-size: 18px; color: var(--primary);">0.00 Lot</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
-                        <span class="level-label">Capital Risk:</span>
+                        <span class="level-label">Maximum Capital Risk:</span>
                         <strong id="res-risk-usd" style="font-size: 18px; color: var(--sell-color);">$0.00</strong>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Section 4: Strategy Backtest Studio -->
+        <!-- Section 4: Backtest Studio (HIDDEN BY DEFAULT) -->
         <section id="sec-backtest" class="app-section">
             <div style="margin-bottom: 16px;">
                 <button id="btn-run-backtest" class="btn-action" style="max-width: 250px;">Run Strategy Backtest</button>
             </div>
 
-            <div class="grid-3" style="margin-bottom: 16px;">
+            <div class="grid-3" style="margin-bottom: 20px;">
                 <div class="level-card">
                     <div class="level-label">Net Profit</div>
                     <div id="bt-net-profit" class="level-value">$0.00</div>
@@ -229,13 +229,13 @@
             </div>
 
             <div class="grid-2">
-                <div class="card-section">
-                    <div class="card-title">Equity Growth Curve</div>
+                <div class="card-panel">
+                    <div class="card-panel-head">Equity Growth Curve</div>
                     <div id="equity-chart" style="height: 320px;"></div>
                 </div>
 
-                <div class="card-section">
-                    <div class="card-title">Simulated Trades Log</div>
+                <div class="card-panel">
+                    <div class="card-panel-head">Simulated Trades Log</div>
                     <div class="table-wrapper">
                         <table class="mobile-table">
                             <thead>
@@ -255,10 +255,10 @@
             </div>
         </section>
 
-        <!-- Section 5: NLP News Radar -->
+        <!-- Section 5: AI & Sentiment Radar (HIDDEN BY DEFAULT) -->
         <section id="sec-news" class="app-section">
-            <div class="card-section">
-                <div class="card-title">📰 Financial NLP News Radar</div>
+            <div class="card-panel">
+                <div class="card-panel-head">📰 Financial NLP News Radar</div>
                 <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">
                     Sentiment Index: <strong id="sentiment-label" style="color: var(--primary);">Neutral (0.0)</strong>
                 </div>
@@ -266,27 +266,27 @@
             </div>
         </section>
 
-        <!-- Section 6: Integrations & MT5 EA Download -->
+        <!-- Section 6: Integrations & EA Download (HIDDEN BY DEFAULT) -->
         <section id="sec-ea" class="app-section">
             <div class="grid-2">
-                <div class="card-section">
-                    <div class="card-title">📥 MetaTrader 5 EA Script</div>
+                <div class="card-panel">
+                    <div class="card-panel-head">📥 MetaTrader 5 EA Script</div>
                     <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 10px;">
                         Copy into MetaTrader 5 (<code>MQL5/Experts/ForexMindAI_EA.mq5</code>) for automated execution.
                     </p>
                     <pre id="mql5-code-box" class="code-box"></pre>
                 </div>
 
-                <div class="card-section">
-                    <div class="card-title">📱 Telegram Signal Alerts</div>
+                <div class="card-panel">
+                    <div class="card-panel-head">📱 Telegram Signal Alerts</div>
                     <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px;">
                         <div>
                             <label class="level-label">Telegram Bot Token</label>
-                            <input type="text" id="tg-token" class="select-pill" placeholder="e.g. 7000000000:AAFg_Token" style="text-align: left;">
+                            <input type="text" id="tg-token" class="select-input" placeholder="e.g. 7000000000:AAFg_Token" style="width: 100%;">
                         </div>
                         <div>
                             <label class="level-label">Chat ID / Channel</label>
-                            <input type="text" id="tg-chat-id" class="select-pill" placeholder="e.g. @ForexMindSignals" style="text-align: left;">
+                            <input type="text" id="tg-chat-id" class="select-input" placeholder="e.g. @ForexMindSignals" style="width: 100%;">
                         </div>
                     </div>
                     <button id="btn-send-tg" class="btn-action">Send Test Telegram Alert</button>
@@ -297,7 +297,7 @@
 
     </main>
 
-    <!-- Native Fixed Mobile Bottom Navigation Bar (6 Tabs for iPhone / Mobile) -->
+    <!-- Mobile Bottom Navigation Bar (Appears on Mobile Phones Only) -->
     <nav class="bottom-nav">
         <button class="nav-item active" data-sec="sec-signal">
             <span class="nav-icon">⚡</span>

@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function initApp() {
     initThemeToggle();
-    setupUniversalTabSwitching();
+    setupTabSwitching();
     await loadSymbolOptions();
     
     // Connect WebSocket Live Stream
@@ -12,7 +12,7 @@ async function initApp() {
         marketWS.connect();
     }
 
-    // Bind Event Handlers
+    // Event Listeners
     const btnAnalyze = document.getElementById("btn-analyze");
     if (btnAnalyze) btnAnalyze.addEventListener("click", updateSignalAnalysis);
 
@@ -34,7 +34,7 @@ async function initApp() {
     const btnSendTg = document.getElementById("btn-send-tg");
     if (btnSendTg) btnSendTg.addEventListener("click", sendTelegramTestAlert);
 
-    // Initial Analysis Trigger
+    // Initial Signal Trigger
     await updateSignalAnalysis();
 }
 
@@ -59,16 +59,16 @@ function initThemeToggle() {
     }
 }
 
-function setupUniversalTabSwitching() {
-    // Select both desktop header tabs (.tab-btn) and mobile bottom nav items (.nav-item)
-    const allTabBtns = document.querySelectorAll(".tab-btn, .nav-item");
+function setupTabSwitching() {
+    // Select both desktop top tabs (.tab-btn) and mobile bottom nav items (.nav-item)
+    const allTabs = document.querySelectorAll(".tab-btn, .nav-item");
     
-    allTabBtns.forEach(btn => {
+    allTabs.forEach(btn => {
         btn.addEventListener("click", () => {
             const targetSec = btn.getAttribute("data-sec");
 
-            // Update active state on matching desktop and mobile buttons
-            allTabBtns.forEach(b => {
+            // Update active state on matching buttons
+            allTabs.forEach(b => {
                 if (b.getAttribute("data-sec") === targetSec) {
                     b.classList.add("active");
                 } else {
@@ -76,8 +76,11 @@ function setupUniversalTabSwitching() {
                 }
             });
 
-            // Show active section only
-            document.querySelectorAll(".app-section").forEach(sec => sec.classList.remove("active"));
+            // Hide all sections, show only active section
+            document.querySelectorAll(".app-section").forEach(sec => {
+                sec.classList.remove("active");
+            });
+
             const activeSec = document.getElementById(targetSec);
             if (activeSec) {
                 activeSec.classList.add("active");
@@ -87,8 +90,6 @@ function setupUniversalTabSwitching() {
             if (targetSec === "sec-backtest") updateBacktest();
             if (targetSec === "sec-news") loadSentimentRadar();
             if (targetSec === "sec-ea") loadMQL5Code();
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     });
 }
