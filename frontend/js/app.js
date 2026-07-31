@@ -8,7 +8,8 @@ async function initApp() {
     await loadSymbolOptions();
     await checkConnectedAccounts();
     
-    // Periodically update connected accounts status every 10 seconds
+    // Auto-refresh live candles & signal analysis every 4 seconds
+    setInterval(updateSignalAnalysis, 4000);
     setInterval(checkConnectedAccounts, 10000);
 
     // Connect WebSocket Live Stream
@@ -132,14 +133,12 @@ async function checkConnectedAccounts() {
         const count = data.connected_count || 0;
         const accounts = data.connected_accounts || [];
 
-        // Update Header Badge
         const badge = document.getElementById("accounts-count-badge");
         if (badge) {
             badge.textContent = `🔌 ${count} MT5 Active`;
             badge.className = count > 0 ? "badge-live online" : "badge-live offline";
         }
 
-        // Update Integrations Tab Badge & Table
         const statusCount = document.getElementById("account-status-count");
         if (statusCount) {
             statusCount.textContent = `${count} Connected Account${count === 1 ? '' : 's'}`;

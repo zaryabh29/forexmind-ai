@@ -19,8 +19,8 @@ class MarketWebSocket {
 
             this.socket.onmessage = (event) => {
                 const data = JSON.parse(event.data);
-                if (data.event === "tick") {
-                    this.onLiveTick(data);
+                if (data.event === "tick" && data.prices) {
+                    this.onLiveTick(data.prices);
                 }
             };
 
@@ -54,21 +54,25 @@ class MarketWebSocket {
         const badge = document.getElementById("ws-status-badge");
         if (badge) {
             if (isConnected) {
-                badge.className = "ws-badge online";
+                badge.className = "badge-live online";
                 badge.textContent = "📡 LIVE STREAM";
             } else {
-                badge.className = "ws-badge offline";
+                badge.className = "badge-live offline";
                 badge.textContent = "🔌 DISCONNECTED";
             }
         }
     }
 
-    onLiveTick(data) {
-        // Pulse live ticker indicator
-        const ticker = document.getElementById("live-ticker");
-        if (ticker) {
-            ticker.style.opacity = "1.0";
-            setTimeout(() => { ticker.style.opacity = "0.7"; }, 500);
+    onLiveTick(prices) {
+        const selectSymbol = document.getElementById("select-symbol");
+        const currentSymbol = selectSymbol ? selectSymbol.value : "EURUSD";
+        
+        if (prices[currentSymbol]) {
+            const livePrice = prices[currentSymbol];
+            const valEntry = document.getElementById("val-entry");
+            if (valEntry && valEntry.textContent !== "--") {
+                valEntry.textContent = livePrice;
+            }
         }
     }
 }
