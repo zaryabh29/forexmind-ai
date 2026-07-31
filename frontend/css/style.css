@@ -70,7 +70,7 @@ body {
     background-color: var(--bg-app);
     color: var(--text-main);
     min-height: 100vh;
-    padding-bottom: 85px; /* Safe inset for fixed bottom bar */
+    padding-bottom: 85px; /* Safe inset for mobile bottom nav */
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
 }
@@ -79,7 +79,7 @@ body {
 .app-header {
     background: var(--card-bg);
     border-bottom: 1px solid var(--card-border);
-    padding: 14px 18px;
+    padding: 12px 16px;
     position: sticky;
     top: 0;
     z-index: 100;
@@ -91,38 +91,38 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
 .brand-badge {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
 .brand-icon {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
     background: var(--primary-gradient);
-    border-radius: 12px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 800;
-    font-size: 16px;
+    font-size: 15px;
     color: #ffffff;
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
 }
 
 .brand-title {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 800;
     letter-spacing: -0.4px;
     color: var(--text-main);
 }
 
 .brand-sub {
-    font-size: 11px;
+    font-size: 10px;
     color: var(--primary);
     font-weight: 700;
 }
@@ -130,17 +130,17 @@ body {
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .badge-live {
-    padding: 5px 10px;
+    padding: 4px 8px;
     border-radius: 20px;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
 }
 
 .badge-live.online {
@@ -159,9 +159,9 @@ body {
     background: var(--input-bg);
     border: 1px solid var(--card-border);
     color: var(--text-main);
-    padding: 7px 12px;
+    padding: 6px 10px;
     border-radius: 20px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     cursor: pointer;
 }
@@ -169,17 +169,24 @@ body {
 /* Selector Ribbon */
 .selector-ribbon {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.selector-subribbon {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.2fr;
+    gap: 6px;
 }
 
 .select-pill {
     background: var(--input-bg);
     border: 1px solid var(--card-border);
     color: var(--text-main);
-    padding: 9px 10px;
+    padding: 8px 6px;
     border-radius: var(--radius-sm);
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     outline: none;
     width: 100%;
@@ -187,11 +194,34 @@ body {
     -webkit-appearance: none;
 }
 
+.input-label-mini {
+    font-size: 9px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-bottom: 2px;
+    display: block;
+    text-align: center;
+}
+
+.btn-analyze-mini {
+    background: var(--primary-gradient);
+    color: #ffffff;
+    font-weight: 800;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    border: none;
+    font-size: 12px;
+    cursor: pointer;
+    width: 100%;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
 /* Main Container */
 .app-container {
     max-width: 1200px;
-    margin: 16px auto;
-    padding: 0 16px;
+    margin: 14px auto;
+    padding: 0 14px;
 }
 
 /* Sections */
@@ -208,16 +238,16 @@ body {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     border-radius: var(--radius-lg);
-    padding: 22px;
+    padding: 18px;
     text-align: center;
-    margin-bottom: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    margin-bottom: 14px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 
 .hero-header {
-    padding: 18px;
+    padding: 16px;
     border-radius: var(--radius-md);
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .hero-header.BUY {
@@ -236,7 +266,7 @@ body {
 }
 
 .hero-title {
-    font-size: 32px;
+    font-size: 30px;
     font-weight: 900;
     letter-spacing: -0.5px;
 }
@@ -246,7 +276,7 @@ body {
 .NO_TRADE .hero-title { color: var(--notrade-color); }
 
 .hero-sub {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     color: var(--text-muted);
     margin-top: 4px;
@@ -256,20 +286,20 @@ body {
 .levels-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
+    gap: 10px;
+    margin-bottom: 16px;
 }
 
 .level-card {
     background: var(--input-bg);
     border: 1px solid var(--card-border);
     border-radius: var(--radius-md);
-    padding: 14px;
+    padding: 12px;
     text-align: left;
 }
 
 .level-label {
-    font-size: 11px;
+    font-size: 10px;
     text-transform: uppercase;
     color: var(--text-muted);
     font-weight: 700;
@@ -277,30 +307,30 @@ body {
 }
 
 .level-value {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 800;
     color: var(--text-main);
-    margin-top: 3px;
+    margin-top: 2px;
 }
 
 /* XAI List */
 .xai-box {
     text-align: left;
-    margin-top: 14px;
+    margin-top: 12px;
 }
 
 .xai-head {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     color: var(--text-main);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .xai-items {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 5px;
 }
 
 .xai-items li {
@@ -332,31 +362,31 @@ body {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     border-radius: var(--radius-md);
-    padding: 18px;
-    margin-bottom: 16px;
+    padding: 16px;
+    margin-bottom: 14px;
 }
 
 .card-title {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 800;
     color: var(--text-main);
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
-/* Native Mobile Bottom Nav Bar */
+/* Native Mobile Bottom Nav Bar (6 Tabs) */
 .bottom-nav {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 68px;
+    height: 64px;
     background: var(--card-bg);
     border-top: 1px solid var(--card-border);
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     align-items: center;
     z-index: 200;
-    padding-bottom: env(safe-area-inset-bottom, 6px);
+    padding-bottom: env(safe-area-inset-bottom, 4px);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
 }
@@ -368,7 +398,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3px;
+    gap: 2px;
     color: var(--text-muted);
     cursor: pointer;
 }
@@ -378,11 +408,11 @@ body {
 }
 
 .nav-icon {
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .nav-text {
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 700;
 }
 
@@ -398,23 +428,23 @@ body {
 }
 
 .mobile-table th, .mobile-table td {
-    padding: 12px;
-    font-size: 13px;
+    padding: 10px;
+    font-size: 12px;
     text-align: left;
     border-bottom: 1px solid var(--card-border);
 }
 
 .mobile-table th {
     color: var(--text-muted);
-    font-size: 11px;
+    font-size: 10px;
     text-transform: uppercase;
     font-weight: 700;
 }
 
 .status-badge {
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 11px;
+    padding: 3px 6px;
+    border-radius: 5px;
+    font-size: 10px;
     font-weight: 700;
 }
 
@@ -422,16 +452,29 @@ body {
 .status-badge.SELL { background: var(--sell-bg); color: var(--sell-color); border: 1px solid var(--sell-border); }
 .status-badge.NEUTRAL { background: var(--notrade-bg); color: var(--notrade-color); border: 1px solid var(--notrade-border); }
 
+/* Code Box */
+.code-box {
+    background: var(--input-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    font-family: 'Consolas', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    overflow-x: auto;
+    max-height: 300px;
+}
+
 /* Buttons */
 .btn-action {
     background: var(--primary-gradient);
     color: #ffffff;
     font-weight: 800;
-    padding: 14px;
+    padding: 12px;
     border-radius: var(--radius-sm);
     border: none;
     width: 100%;
-    font-size: 15px;
+    font-size: 14px;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
@@ -440,8 +483,8 @@ body {
 @media (min-width: 900px) {
     .app-container {
         display: grid;
-        grid-template-columns: 400px 1fr;
-        gap: 20px;
+        grid-template-columns: 390px 1fr;
+        gap: 16px;
     }
     
     .app-section {

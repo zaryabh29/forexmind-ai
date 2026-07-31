@@ -37,27 +37,54 @@
             </div>
         </div>
 
-        <!-- Controls Selector Ribbon -->
+        <!-- Controls Selector Ribbon Row 1 -->
         <div class="selector-ribbon">
-            <select id="select-symbol" class="select-pill">
-                <option value="EURUSD">EUR/USD</option>
-                <option value="GBPUSD">GBP/USD</option>
-                <option value="USDJPY">USD/JPY</option>
-                <option value="XAUUSD">XAU/USD (Gold)</option>
-                <option value="AUDUSD">AUD/USD</option>
-            </select>
+            <div>
+                <span class="input-label-mini">Symbol</span>
+                <select id="select-symbol" class="select-pill">
+                    <option value="EURUSD">EUR/USD</option>
+                    <option value="GBPUSD">GBP/USD</option>
+                    <option value="USDJPY">USD/JPY</option>
+                    <option value="XAUUSD">XAU/USD (Gold)</option>
+                    <option value="AUDUSD">AUD/USD</option>
+                </select>
+            </div>
 
-            <select id="select-timeframe" class="select-pill">
-                <option value="M15" selected>M15 (Intraday)</option>
-                <option value="M5">M5 (Scalp)</option>
-                <option value="H1">H1 (Swing)</option>
-            </select>
+            <div>
+                <span class="input-label-mini">Timeframe</span>
+                <select id="select-timeframe" class="select-pill">
+                    <option value="M15" selected>M15 (Intraday)</option>
+                    <option value="M5">M5 (Scalp)</option>
+                    <option value="H1">H1 (Swing)</option>
+                </select>
+            </div>
 
-            <select id="select-direction" class="select-pill">
-                <option value="AUTO" selected>Auto</option>
-                <option value="BUY">BUY</option>
-                <option value="SELL">SELL</option>
-            </select>
+            <div>
+                <span class="input-label-mini">Signal Mode</span>
+                <select id="select-direction" class="select-pill">
+                    <option value="AUTO" selected>Auto</option>
+                    <option value="BUY">BUY</option>
+                    <option value="SELL">SELL</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Controls Selector Ribbon Row 2 (Balance, Risk, Analyze Button) -->
+        <div class="selector-subribbon">
+            <div>
+                <span class="input-label-mini">Balance ($)</span>
+                <input type="number" id="input-balance" class="select-pill" value="1000" step="100">
+            </div>
+
+            <div>
+                <span class="input-label-mini">Risk (%)</span>
+                <input type="number" id="input-risk" class="select-pill" value="1.0" step="0.5">
+            </div>
+
+            <div>
+                <span class="input-label-mini">Action</span>
+                <button id="btn-analyze" class="btn-analyze-mini">⚡ Analyze</button>
+            </div>
         </div>
     </header>
 
@@ -114,7 +141,7 @@
             <!-- Candlestick Chart Card -->
             <div class="card-section">
                 <div class="card-title">Live Price Action</div>
-                <div id="candlestick-chart" style="height: 380px;"></div>
+                <div id="candlestick-chart" style="height: 360px;"></div>
             </div>
         </section>
 
@@ -143,7 +170,7 @@
         <section id="sec-risk" class="app-section">
             <div class="card-section">
                 <div class="card-title">Position Risk Calculator</div>
-                <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;">
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px;">
                     <div>
                         <label class="level-label">Account Balance ($)</label>
                         <input type="number" id="risk-balance" class="select-pill" value="1000" style="text-align: left;">
@@ -160,7 +187,7 @@
 
                 <button id="btn-calc-risk" class="btn-action">Calculate Lot Size</button>
 
-                <div class="level-card" style="margin-top: 16px;">
+                <div class="level-card" style="margin-top: 14px;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
                         <span class="level-label">Suggested Lot:</span>
                         <strong id="res-risk-lot" style="font-size: 16px; color: var(--primary);">0.00 Lot</strong>
@@ -179,8 +206,8 @@
                 <button id="btn-run-backtest" class="btn-action">Run Strategy Backtest</button>
             </div>
 
-            <!-- Summary Cards 2x3 Grid -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
+            <!-- Summary Cards 2x2 Grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;">
                 <div class="level-card">
                     <div class="level-label">Net Profit</div>
                     <div id="bt-net-profit" class="level-value">$0.00</div>
@@ -202,7 +229,7 @@
             <!-- Equity Growth Curve -->
             <div class="card-section">
                 <div class="card-title">Equity Growth Curve</div>
-                <div id="equity-chart" style="height: 300px;"></div>
+                <div id="equity-chart" style="height: 280px;"></div>
             </div>
 
             <!-- Simulated Trades Log -->
@@ -237,9 +264,36 @@
             </div>
         </section>
 
+        <!-- Section 6: Integrations & MT5 EA Download -->
+        <section id="sec-ea" class="app-section">
+            <div class="card-section">
+                <div class="card-title">📥 MetaTrader 5 EA Script</div>
+                <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 10px;">
+                    Copy into MetaTrader 5 (<code>MQL5/Experts/ForexMindAI_EA.mq5</code>) for 24/7 automated order execution.
+                </p>
+                <pre id="mql5-code-box" class="code-box"></pre>
+            </div>
+
+            <div class="card-section">
+                <div class="card-title">📱 Telegram Signal Alerts</div>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+                    <div>
+                        <label class="level-label">Telegram Bot Token</label>
+                        <input type="text" id="tg-token" class="select-pill" placeholder="e.g. 7000000000:AAFg_Token" style="text-align: left;">
+                    </div>
+                    <div>
+                        <label class="level-label">Chat ID / Channel</label>
+                        <input type="text" id="tg-chat-id" class="select-pill" placeholder="e.g. @ForexMindSignals" style="text-align: left;">
+                    </div>
+                </div>
+                <button id="btn-send-tg" class="btn-action">Send Test Telegram Alert</button>
+                <div id="tg-status" style="margin-top: 10px; font-size: 12px;"></div>
+            </div>
+        </section>
+
     </main>
 
-    <!-- Native Fixed Mobile Bottom Navigation Bar -->
+    <!-- Native Fixed Mobile Bottom Navigation Bar (6 Tabs) -->
     <nav class="bottom-nav">
         <button class="nav-item active" data-sec="sec-signal">
             <span class="nav-icon">⚡</span>
@@ -260,6 +314,10 @@
         <button class="nav-item" data-sec="sec-news">
             <span class="nav-icon">📰</span>
             <span class="nav-text">News</span>
+        </button>
+        <button class="nav-item" data-sec="sec-ea">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-text">EA</span>
         </button>
     </nav>
 
