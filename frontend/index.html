@@ -2,8 +2,8 @@
 <html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ForexMind AI PRO - Mobile Trading Platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ForexMind AI PRO - Universal Trading Terminal</title>
 
     <!-- iOS Native App Meta -->
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -20,7 +20,7 @@
 </head>
 <body>
 
-    <!-- Mobile-First App Header -->
+    <!-- Header Bar (Natural Scrolling) -->
     <header class="app-header">
         <div class="header-top">
             <div class="brand-badge">
@@ -37,10 +37,10 @@
             </div>
         </div>
 
-        <!-- Controls Selector Ribbon Row 1 -->
-        <div class="selector-ribbon">
-            <div>
-                <span class="input-label-mini">Symbol</span>
+        <!-- Controls Bar -->
+        <div class="controls-bar">
+            <div class="control-group">
+                <label>Symbol</label>
                 <select id="select-symbol" class="select-pill">
                     <option value="EURUSD">EUR/USD</option>
                     <option value="GBPUSD">GBP/USD</option>
@@ -50,8 +50,8 @@
                 </select>
             </div>
 
-            <div>
-                <span class="input-label-mini">Timeframe</span>
+            <div class="control-group">
+                <label>Timeframe</label>
                 <select id="select-timeframe" class="select-pill">
                     <option value="M15" selected>M15 (Intraday)</option>
                     <option value="M5">M5 (Scalp)</option>
@@ -59,89 +59,92 @@
                 </select>
             </div>
 
-            <div>
-                <span class="input-label-mini">Signal Mode</span>
+            <div class="control-group">
+                <label>Signal Mode</label>
                 <select id="select-direction" class="select-pill">
                     <option value="AUTO" selected>Auto</option>
                     <option value="BUY">BUY</option>
                     <option value="SELL">SELL</option>
                 </select>
             </div>
-        </div>
 
-        <!-- Controls Selector Ribbon Row 2 (Balance, Risk, Analyze Button) -->
-        <div class="selector-subribbon">
-            <div>
-                <span class="input-label-mini">Balance ($)</span>
-                <input type="number" id="input-balance" class="select-pill" value="1000" step="100">
+            <div class="control-group">
+                <label>Balance ($)</label>
+                <input type="number" id="input-balance" class="number-input" value="1000" step="100" style="width: 100px;">
             </div>
 
-            <div>
-                <span class="input-label-mini">Risk (%)</span>
-                <input type="number" id="input-risk" class="select-pill" value="1.0" step="0.5">
+            <div class="control-group">
+                <label>Risk (%)</label>
+                <input type="number" id="input-risk" class="number-input" value="1.0" step="0.5" style="width: 80px;">
             </div>
 
-            <div>
-                <span class="input-label-mini">Action</span>
-                <button id="btn-analyze" class="btn-analyze-mini">⚡ Analyze</button>
-            </div>
+            <button id="btn-analyze" class="btn-primary" style="margin-top: 15px;">⚡ Analyze Signal</button>
         </div>
     </header>
 
-    <!-- Main Mobile Container -->
+    <!-- Desktop Navigation Tabs Bar (Horizontal Bar for Laptop/Desktop) -->
+    <nav class="desktop-tabs">
+        <button class="tab-btn active" data-sec="sec-signal">📈 Trading Terminal</button>
+        <button class="tab-btn" data-sec="sec-matrix">📊 Market Matrix</button>
+        <button class="tab-btn" data-sec="sec-risk">🛡️ Risk Manager</button>
+        <button class="tab-btn" data-sec="sec-backtest">📉 Backtest Studio</button>
+        <button class="tab-btn" data-sec="sec-news">📰 AI Radar</button>
+        <button class="tab-btn" data-sec="sec-ea">⚙️ Integrations</button>
+    </nav>
+
+    <!-- Main Container -->
     <main class="app-container">
 
         <!-- Section 1: Signal & Chart Terminal -->
         <section id="sec-signal" class="app-section active">
-            <!-- Hero Signal Card -->
-            <div class="signal-hero" id="signal-card-container">
-                <div id="signal-badge" class="hero-header NO_TRADE">
-                    <div id="signal-title" class="hero-title">NO TRADE</div>
-                    <div id="signal-confidence" class="hero-sub">AI Confidence: 0.0%</div>
-                </div>
-
-                <!-- Parameters 2x2 Grid -->
-                <div class="levels-grid">
-                    <div class="level-card">
-                        <div class="level-label">Entry Price</div>
-                        <div id="val-entry" class="level-value">--</div>
+            <div class="grid-main">
+                <!-- Left: Hero Signal Card & XAI -->
+                <div class="signal-hero" id="signal-card-container">
+                    <div id="signal-badge" class="hero-header NO_TRADE">
+                        <div id="signal-title" class="hero-title">NO TRADE</div>
+                        <div id="signal-confidence" class="hero-sub">AI Confidence: 0.0%</div>
                     </div>
-                    <div class="level-card">
-                        <div class="level-label" style="color: var(--sell-color);">Stop Loss (SL)</div>
-                        <div id="val-sl" class="level-value" style="color: var(--sell-color);">--</div>
+
+                    <div class="levels-grid">
+                        <div class="level-card">
+                            <div class="level-label">Entry Price</div>
+                            <div id="val-entry" class="level-value">--</div>
+                        </div>
+                        <div class="level-card">
+                            <div class="level-label" style="color: var(--sell-color);">Stop Loss (SL)</div>
+                            <div id="val-sl" class="level-value" style="color: var(--sell-color);">--</div>
+                        </div>
+                        <div class="level-card">
+                            <div class="level-label" style="color: var(--buy-color);">Take Profit (TP)</div>
+                            <div id="val-tp" class="level-value" style="color: var(--buy-color);">--</div>
+                        </div>
+                        <div class="level-card">
+                            <div class="level-label" style="color: var(--primary);">Suggested Lot</div>
+                            <div id="val-lot" class="level-value" style="color: var(--primary);">--</div>
+                        </div>
                     </div>
-                    <div class="level-card">
-                        <div class="level-label" style="color: var(--buy-color);">Take Profit (TP)</div>
-                        <div id="val-tp" class="level-value" style="color: var(--buy-color);">--</div>
+
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+                        <span>Risk/Reward: <strong id="val-rr" style="color: var(--text-main);">--</strong></span>
+                        <span>Market: <strong id="val-condition" style="color: var(--text-main);">--</strong></span>
                     </div>
-                    <div class="level-card">
-                        <div class="level-label" style="color: var(--primary);">Suggested Lot</div>
-                        <div id="val-lot" class="level-value" style="color: var(--primary);">--</div>
+
+                    <div class="xai-box">
+                        <div class="xai-head">Confirmations</div>
+                        <ul id="xai-reasons" class="xai-items reasons"></ul>
+                    </div>
+
+                    <div class="xai-box">
+                        <div class="xai-head" style="color: var(--notrade-color);">Risk Warnings</div>
+                        <ul id="xai-warnings" class="xai-items warnings"></ul>
                     </div>
                 </div>
 
-                <!-- Extra Readouts -->
-                <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
-                    <span>Risk/Reward: <strong id="val-rr" style="color: var(--text-main);">--</strong></span>
-                    <span>Market: <strong id="val-condition" style="color: var(--text-main);">--</strong></span>
+                <!-- Right: Candlestick Chart Card -->
+                <div class="card-section">
+                    <div class="card-title">Live Price Action</div>
+                    <div id="candlestick-chart" style="height: 400px;"></div>
                 </div>
-
-                <!-- XAI List -->
-                <div class="xai-box">
-                    <div class="xai-head">Confirmations</div>
-                    <ul id="xai-reasons" class="xai-items reasons"></ul>
-                </div>
-
-                <div class="xai-box">
-                    <div class="xai-head" style="color: var(--notrade-color);">Risk Warnings</div>
-                    <ul id="xai-warnings" class="xai-items warnings"></ul>
-                </div>
-            </div>
-
-            <!-- Candlestick Chart Card -->
-            <div class="card-section">
-                <div class="card-title">Live Price Action</div>
-                <div id="candlestick-chart" style="height: 360px;"></div>
             </div>
         </section>
 
@@ -153,10 +156,10 @@
                     <table class="mobile-table">
                         <thead>
                             <tr>
-                                <th>TF</th>
+                                <th>Timeframe</th>
                                 <th>Price</th>
-                                <th>Trend</th>
-                                <th>RSI</th>
+                                <th>Trend Direction</th>
+                                <th>RSI (14)</th>
                                 <th>State</th>
                             </tr>
                         </thead>
@@ -168,9 +171,9 @@
 
         <!-- Section 3: Risk Calculator -->
         <section id="sec-risk" class="app-section">
-            <div class="card-section">
+            <div class="card-section" style="max-width: 550px; margin: 0 auto;">
                 <div class="card-title">Position Risk Calculator</div>
-                <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px;">
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;">
                     <div>
                         <label class="level-label">Account Balance ($)</label>
                         <input type="number" id="risk-balance" class="select-pill" value="1000" style="text-align: left;">
@@ -187,14 +190,14 @@
 
                 <button id="btn-calc-risk" class="btn-action">Calculate Lot Size</button>
 
-                <div class="level-card" style="margin-top: 14px;">
+                <div class="level-card" style="margin-top: 16px;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
                         <span class="level-label">Suggested Lot:</span>
-                        <strong id="res-risk-lot" style="font-size: 16px; color: var(--primary);">0.00 Lot</strong>
+                        <strong id="res-risk-lot" style="font-size: 18px; color: var(--primary);">0.00 Lot</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
                         <span class="level-label">Capital Risk:</span>
-                        <strong id="res-risk-usd" style="font-size: 16px; color: var(--sell-color);">$0.00</strong>
+                        <strong id="res-risk-usd" style="font-size: 18px; color: var(--sell-color);">$0.00</strong>
                     </div>
                 </div>
             </div>
@@ -202,12 +205,11 @@
 
         <!-- Section 4: Strategy Backtest Studio -->
         <section id="sec-backtest" class="app-section">
-            <div style="margin-bottom: 14px;">
-                <button id="btn-run-backtest" class="btn-action">Run Strategy Backtest</button>
+            <div style="margin-bottom: 16px;">
+                <button id="btn-run-backtest" class="btn-action" style="max-width: 250px;">Run Strategy Backtest</button>
             </div>
 
-            <!-- Summary Cards 2x2 Grid -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;">
+            <div class="grid-3" style="margin-bottom: 16px;">
                 <div class="level-card">
                     <div class="level-label">Net Profit</div>
                     <div id="bt-net-profit" class="level-value">$0.00</div>
@@ -226,29 +228,29 @@
                 </div>
             </div>
 
-            <!-- Equity Growth Curve -->
-            <div class="card-section">
-                <div class="card-title">Equity Growth Curve</div>
-                <div id="equity-chart" style="height: 280px;"></div>
-            </div>
+            <div class="grid-2">
+                <div class="card-section">
+                    <div class="card-title">Equity Growth Curve</div>
+                    <div id="equity-chart" style="height: 320px;"></div>
+                </div>
 
-            <!-- Simulated Trades Log -->
-            <div class="card-section">
-                <div class="card-title">Simulated Trades Log</div>
-                <div class="table-wrapper">
-                    <table class="mobile-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Time</th>
-                                <th>Signal</th>
-                                <th>Entry</th>
-                                <th>Exit</th>
-                                <th>P&L ($)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="bt-trades-body"></tbody>
-                    </table>
+                <div class="card-section">
+                    <div class="card-title">Simulated Trades Log</div>
+                    <div class="table-wrapper">
+                        <table class="mobile-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Time</th>
+                                    <th>Signal</th>
+                                    <th>Entry</th>
+                                    <th>Exit</th>
+                                    <th>P&L ($)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bt-trades-body"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </section>
@@ -266,34 +268,36 @@
 
         <!-- Section 6: Integrations & MT5 EA Download -->
         <section id="sec-ea" class="app-section">
-            <div class="card-section">
-                <div class="card-title">📥 MetaTrader 5 EA Script</div>
-                <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 10px;">
-                    Copy into MetaTrader 5 (<code>MQL5/Experts/ForexMindAI_EA.mq5</code>) for 24/7 automated order execution.
-                </p>
-                <pre id="mql5-code-box" class="code-box"></pre>
-            </div>
-
-            <div class="card-section">
-                <div class="card-title">📱 Telegram Signal Alerts</div>
-                <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
-                    <div>
-                        <label class="level-label">Telegram Bot Token</label>
-                        <input type="text" id="tg-token" class="select-pill" placeholder="e.g. 7000000000:AAFg_Token" style="text-align: left;">
-                    </div>
-                    <div>
-                        <label class="level-label">Chat ID / Channel</label>
-                        <input type="text" id="tg-chat-id" class="select-pill" placeholder="e.g. @ForexMindSignals" style="text-align: left;">
-                    </div>
+            <div class="grid-2">
+                <div class="card-section">
+                    <div class="card-title">📥 MetaTrader 5 EA Script</div>
+                    <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 10px;">
+                        Copy into MetaTrader 5 (<code>MQL5/Experts/ForexMindAI_EA.mq5</code>) for automated execution.
+                    </p>
+                    <pre id="mql5-code-box" class="code-box"></pre>
                 </div>
-                <button id="btn-send-tg" class="btn-action">Send Test Telegram Alert</button>
-                <div id="tg-status" style="margin-top: 10px; font-size: 12px;"></div>
+
+                <div class="card-section">
+                    <div class="card-title">📱 Telegram Signal Alerts</div>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px;">
+                        <div>
+                            <label class="level-label">Telegram Bot Token</label>
+                            <input type="text" id="tg-token" class="select-pill" placeholder="e.g. 7000000000:AAFg_Token" style="text-align: left;">
+                        </div>
+                        <div>
+                            <label class="level-label">Chat ID / Channel</label>
+                            <input type="text" id="tg-chat-id" class="select-pill" placeholder="e.g. @ForexMindSignals" style="text-align: left;">
+                        </div>
+                    </div>
+                    <button id="btn-send-tg" class="btn-action">Send Test Telegram Alert</button>
+                    <div id="tg-status" style="margin-top: 10px; font-size: 12px;"></div>
+                </div>
             </div>
         </section>
 
     </main>
 
-    <!-- Native Fixed Mobile Bottom Navigation Bar (6 Tabs) -->
+    <!-- Native Fixed Mobile Bottom Navigation Bar (6 Tabs for iPhone / Mobile) -->
     <nav class="bottom-nav">
         <button class="nav-item active" data-sec="sec-signal">
             <span class="nav-icon">⚡</span>

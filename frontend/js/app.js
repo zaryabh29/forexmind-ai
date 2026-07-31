@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function initApp() {
     initThemeToggle();
-    setupMobileNav();
+    setupUniversalTabSwitching();
     await loadSymbolOptions();
     
     // Connect WebSocket Live Stream
@@ -12,7 +12,10 @@ async function initApp() {
         marketWS.connect();
     }
 
-    // Bind Auto-Update Event Handlers
+    // Bind Event Handlers
+    const btnAnalyze = document.getElementById("btn-analyze");
+    if (btnAnalyze) btnAnalyze.addEventListener("click", updateSignalAnalysis);
+
     const selectSymbol = document.getElementById("select-symbol");
     if (selectSymbol) selectSymbol.addEventListener("change", updateSignalAnalysis);
 
@@ -28,7 +31,10 @@ async function initApp() {
     const btnRisk = document.getElementById("btn-calc-risk");
     if (btnRisk) btnRisk.addEventListener("click", updateRiskCalc);
 
-    // Initial Trigger
+    const btnSendTg = document.getElementById("btn-send-tg");
+    if (btnSendTg) btnSendTg.addEventListener("click", sendTelegramTestAlert);
+
+    // Initial Analysis Trigger
     await updateSignalAnalysis();
 }
 
@@ -53,15 +59,24 @@ function initThemeToggle() {
     }
 }
 
-function setupMobileNav() {
-    const navItems = document.querySelectorAll(".nav-item");
-    navItems.forEach(item => {
-        item.addEventListener("click", () => {
-            const targetSec = item.getAttribute("data-sec");
+function setupUniversalTabSwitching() {
+    // Select both desktop header tabs (.tab-btn) and mobile bottom nav items (.nav-item)
+    const allTabBtns = document.querySelectorAll(".tab-btn, .nav-item");
+    
+    allTabBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const targetSec = btn.getAttribute("data-sec");
 
-            navItems.forEach(i => i.classList.remove("active"));
-            item.classList.add("active");
+            // Update active state on matching desktop and mobile buttons
+            allTabBtns.forEach(b => {
+                if (b.getAttribute("data-sec") === targetSec) {
+                    b.classList.add("active");
+                } else {
+                    b.classList.remove("active");
+                }
+            });
 
+            // Show active section only
             document.querySelectorAll(".app-section").forEach(sec => sec.classList.remove("active"));
             const activeSec = document.getElementById(targetSec);
             if (activeSec) {
@@ -71,6 +86,7 @@ function setupMobileNav() {
             if (targetSec === "sec-matrix") loadMTFMatrix();
             if (targetSec === "sec-backtest") updateBacktest();
             if (targetSec === "sec-news") loadSentimentRadar();
+            if (targetSec === "sec-ea") loadMQL5Code();
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
@@ -109,18 +125,22 @@ async function updateSignalAnalysis() {
     const symbolEl = document.getElementById("select-symbol");
     const timeframeEl = document.getElementById("select-timeframe");
     const directionEl = document.getElementById("select-direction");
+    const balanceEl = document.getElementById("input-balance");
+    const riskEl = document.getElementById("input-risk");
 
     if (!symbolEl || !timeframeEl) return;
 
     const symbol = symbolEl.value || "EURUSD";
     const timeframe = timeframeEl.value || "M15";
     const direction = directionEl ? directionEl.value : "AUTO";
+    const balance = balanceEl ? balanceEl.value : 1000;
+    const risk = riskEl ? riskEl.value : 1.0;
 
     const container = document.getElementById("signal-card-container");
     if (!container) return;
 
     try {
-        const res = await API.getSignal(symbol, timeframe, 1000, 1.0, 0.55, false, direction);
+        const res = await API.getSignal(symbol, timeframe, balance, risk, 0.55, false, direction);
 
         const sigBadge = document.getElementById("signal-badge");
         const sigTitle = document.getElementById("signal-title");
@@ -226,6 +246,37 @@ async function loadSentimentRadar() {
         });
     } catch (err) {
         console.error("Error loading sentiment radar:", err);
+    }
+}
+
+async function sendTelegramTestAlert() {
+    const tokenEl = document.getElementById("tg-token");
+    const chatEl = document.getElementById("tg-chat-id");
+    const symbolEl = document.getElementById("select-symbol");
+    const statusDiv = document.getElementById("tg-status");
+
+    if (!tokenEl || !chatEl || !statusDiv) return;
+
+    try {
+        statusDiv.textContent = "Sending Telegram alert...";
+        const res = await API.sendTelegramAlert(tokenEl.value, chatEl.value, symbolEl ? symbolEl.value : "EURUSD");
+        if (res.status === "SUCCESS") {
+            statusDiv.innerHTML = `<span style="color: var(--buy-color); font-weight: bold;">Telegram Signal Alert Sent Successfully!</span>`;
+        } else {
+            statusDiv.innerHTML = `<span style="color: var(--sell-color); font-weight: bold;">Failed: ${res.message || res.error}</span>`;
+        }
+    } catch (err) {
+        statusDiv.textContent = "Telegram sending error.";
+    }
+}
+
+async function loadMQL5Code() {
+    try {
+        const code = await API.getMQL5Script();
+        const codeBox = document.getElementById("mql5-code-box");
+        if (codeBox) codeBox.textContent = code;
+    } catch (err) {
+        console.error("Error loading MQL5 script:", err);
     }
 }
 

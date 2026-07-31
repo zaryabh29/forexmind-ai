@@ -25,9 +25,9 @@
     --text-muted: #94a3b8;
     --text-dim: #64748b;
     
-    --radius-sm: 10px;
-    --radius-md: 16px;
-    --radius-lg: 24px;
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
 }
 
 [data-theme="light"] {
@@ -70,21 +70,17 @@ body {
     background-color: var(--bg-app);
     color: var(--text-main);
     min-height: 100vh;
-    padding-bottom: 85px; /* Safe inset for mobile bottom nav */
+    padding-bottom: 75px; /* Inset for mobile bottom bar */
     -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
 }
 
-/* Mobile-First Header Bar */
+/* Header Bar (Natural Scrolling - NOT Fixed) */
 .app-header {
     background: var(--card-bg);
     border-bottom: 1px solid var(--card-border);
-    padding: 12px 16px;
-    position: sticky;
-    top: 0;
+    padding: 14px 20px;
+    position: relative; /* Natural scrolling header */
     z-index: 100;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
 }
 
 .header-top {
@@ -97,7 +93,7 @@ body {
 .brand-badge {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
 
 .brand-icon {
@@ -111,11 +107,11 @@ body {
     font-weight: 800;
     font-size: 15px;
     color: #ffffff;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+    box-shadow: 0 3px 10px rgba(59, 130, 246, 0.3);
 }
 
 .brand-title {
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 800;
     letter-spacing: -0.4px;
     color: var(--text-main);
@@ -159,72 +155,104 @@ body {
     background: var(--input-bg);
     border: 1px solid var(--card-border);
     color: var(--text-main);
-    padding: 6px 10px;
+    padding: 6px 12px;
     border-radius: 20px;
     font-size: 11px;
     font-weight: 700;
     cursor: pointer;
 }
 
-/* Selector Ribbon */
-.selector-ribbon {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-    margin-bottom: 8px;
+/* Controls Bar Layout */
+.controls-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
-.selector-subribbon {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1.2fr;
-    gap: 6px;
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
-.select-pill {
+.control-group label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.select-pill, .select-input, .number-input {
     background: var(--input-bg);
     border: 1px solid var(--card-border);
     color: var(--text-main);
-    padding: 8px 6px;
+    padding: 8px 10px;
     border-radius: var(--radius-sm);
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     outline: none;
-    width: 100%;
-    text-align: center;
-    -webkit-appearance: none;
 }
 
-.input-label-mini {
-    font-size: 9px;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    font-weight: 700;
-    margin-bottom: 2px;
-    display: block;
-    text-align: center;
-}
-
-.btn-analyze-mini {
+.btn-primary, .btn-analyze-mini {
     background: var(--primary-gradient);
     color: #ffffff;
     font-weight: 800;
-    padding: 8px 10px;
+    padding: 8px 16px;
     border-radius: var(--radius-sm);
     border: none;
-    font-size: 12px;
+    font-size: 13px;
     cursor: pointer;
-    width: 100%;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 3px 10px rgba(59, 130, 246, 0.3);
 }
 
-/* Main Container */
+.btn-primary:hover {
+    background: var(--primary);
+}
+
+/* Desktop Horizontal Nav Tabs Bar */
+.desktop-tabs {
+    display: flex;
+    gap: 6px;
+    padding: 10px 20px;
+    background: var(--bg-app);
+    border-bottom: 1px solid var(--card-border);
+    overflow-x: auto;
+}
+
+.tab-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    padding: 8px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.tab-btn:hover {
+    color: var(--text-main);
+    background: var(--card-bg);
+}
+
+.tab-btn.active {
+    color: var(--text-main);
+    background: var(--card-bg);
+    border-color: var(--card-border);
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+/* App Main Container */
 .app-container {
-    max-width: 1200px;
-    margin: 14px auto;
-    padding: 0 14px;
+    max-width: 1400px;
+    margin: 16px auto;
+    padding: 0 20px;
 }
 
-/* Sections */
 .app-section {
     display: none;
 }
@@ -238,9 +266,9 @@ body {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     border-radius: var(--radius-lg);
-    padding: 18px;
+    padding: 20px;
     text-align: center;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 
@@ -282,7 +310,25 @@ body {
     margin-top: 4px;
 }
 
-/* Levels Grid Pill Cards */
+/* Grid Layouts */
+.grid-main {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 20px;
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+}
+
 .levels-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -313,7 +359,7 @@ body {
     margin-top: 2px;
 }
 
-/* XAI List */
+/* XAI Bullet List */
 .xai-box {
     text-align: left;
     margin-top: 12px;
@@ -357,24 +403,25 @@ body {
     font-weight: bold;
 }
 
-/* Cards Layout */
+/* Card Sections */
 .card-section {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     border-radius: var(--radius-md);
-    padding: 16px;
-    margin-bottom: 14px;
+    padding: 18px;
+    margin-bottom: 16px;
 }
 
 .card-title {
     font-size: 15px;
     font-weight: 800;
     color: var(--text-main);
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 /* Native Mobile Bottom Nav Bar (6 Tabs) */
 .bottom-nav {
+    display: none;
     position: fixed;
     bottom: 0;
     left: 0;
@@ -382,7 +429,6 @@ body {
     height: 64px;
     background: var(--card-bg);
     border-top: 1px solid var(--card-border);
-    display: grid;
     grid-template-columns: repeat(6, 1fr);
     align-items: center;
     z-index: 200;
@@ -428,7 +474,7 @@ body {
 }
 
 .mobile-table th, .mobile-table td {
-    padding: 10px;
+    padding: 10px 12px;
     font-size: 12px;
     text-align: left;
     border-bottom: 1px solid var(--card-border);
@@ -452,7 +498,6 @@ body {
 .status-badge.SELL { background: var(--sell-bg); color: var(--sell-color); border: 1px solid var(--sell-border); }
 .status-badge.NEUTRAL { background: var(--notrade-bg); color: var(--notrade-color); border: 1px solid var(--notrade-border); }
 
-/* Code Box */
 .code-box {
     background: var(--input-bg);
     border: 1px solid var(--card-border);
@@ -465,7 +510,6 @@ body {
     max-height: 300px;
 }
 
-/* Buttons */
 .btn-action {
     background: var(--primary-gradient);
     color: #ffffff;
@@ -479,19 +523,23 @@ body {
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
-/* Desktop Grid Adapter */
-@media (min-width: 900px) {
-    .app-container {
-        display: grid;
-        grid-template-columns: 390px 1fr;
-        gap: 16px;
+/* --- MOBILE SPECIFIC MEDIA QUERY (< 900px) --- */
+@media (max-width: 899px) {
+    .desktop-tabs {
+        display: none; /* Hide horizontal desktop tabs on mobile */
     }
-    
-    .app-section {
-        display: block !important;
-    }
-    
+
     .bottom-nav {
-        display: none;
+        display: grid; /* Show native bottom navigation bar */
+    }
+
+    .grid-main, .grid-2, .grid-3 {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .app-container {
+        padding: 0 12px;
+        margin: 12px auto;
     }
 }
