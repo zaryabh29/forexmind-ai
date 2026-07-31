@@ -257,13 +257,17 @@ async function executeDirectMT5Order() {
     if (!statusDiv) return;
 
     try {
-        statusDiv.innerHTML = `<span style="color: var(--primary);">⏳ Sending Trade Order to MT5...</span>`;
+        statusDiv.innerHTML = `<span style="color: var(--primary);">⏳ Sending Order to MT5...</span>`;
         const sigRes = await API.getSignal(symbol, "M15", 1000, 1.0, 0.55);
         const sigType = sigRes.final_signal.includes("BUY") ? "BUY" : (sigRes.final_signal.includes("SELL") ? "SELL" : "BUY");
 
         const res = await API.executeMT5Order(symbol, sigType, sigRes.suggested_lot || 0.01, sigRes.stop_loss || 0, sigRes.take_profit || 0);
         
-        statusDiv.innerHTML = `<span style="color: var(--buy-color); font-weight: bold;">⚡ Order Triggered! Status: ${res.status} (Ticket #${res.ticket || 'Active'})</span>`;
+        if (res.status === "ORDER_SENT_TO_MT5" || res.status === "SUCCESS" || res.status === "SIMULATED_SUCCESS") {
+            statusDiv.innerHTML = `<span style="color: var(--buy-color); font-weight: bold;">⚡ Order Sent to MT5 EA! (Ticket #${res.ticket})</span>`;
+        } else {
+            statusDiv.innerHTML = `<span style="color: var(--sell-color);">Status: ${res.status}</span>`;
+        }
     } catch (err) {
         statusDiv.innerHTML = `<span style="color: var(--sell-color);">Order execution failed. Verify MT5 connection.</span>`;
     }

@@ -149,6 +149,9 @@ def get_trading_signal(req: SignalRequest):
     symbol = req.symbol.upper()
     tf = req.main_timeframe.upper()
 
+    # Check if a manual execution request was queued from web/mobile app
+    pending = broker_router.pop_pending_order(symbol)
+
     file_tf = os.path.join(DATA_DIR, f"{symbol}_{tf}.csv")
     file_h1 = os.path.join(DATA_DIR, f"{symbol}_H1.csv")
     file_h4 = os.path.join(DATA_DIR, f"{symbol}_H4.csv")
@@ -184,6 +187,16 @@ def get_trading_signal(req: SignalRequest):
         min_confidence=req.min_confidence,
         signal_direction=req.signal_direction
     )
+
+    # If pending manual order exists, override signal so MT5 EA executes immediately
+    if pending:
+        signal_res["final_signal"] = pending["signal_type"]
+        signal_res["confidence_pct"] = 99.0
+        signal_res["suggested_lot"] = pending["lot_size"]
+        if pending["stop_loss"] > 0:
+            signal_res["stop_loss"] = pending["stop_loss"]
+        if pending["take_profit"] > 0:
+            signal_res["take_profit"] = pending["take_profit"]
 
     chart_candles = df_merged[['time', 'open', 'high', 'low', 'close', 'tick_volume']].tail(60).to_dict(orient='records')
     for c in chart_candles:
