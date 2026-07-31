@@ -5,17 +5,17 @@
 //+------------------------------------------------------------------+
 #property copyright "ForexMind AI Team"
 #property link      "https://github.com/forexmind-ai"
-#property version   "2.00"
+#property version   "3.00"
 #property description "Automated MetaTrader 5 Execution EA & Account Status Monitor for ForexMind AI"
 
 #include <Trade\Trade.mqh>
 
 // Inputs
-input string   InpServerUrl    = "http://127.0.0.1:8000";             // ForexMind AI Server URL
-input double   InpRiskPercent  = 1.0;                                // Risk Per Trade (%)
-input double   InpMinConf      = 65.0;                               // Minimum AI Confidence (%)
-input int      InpMagicNumber  = 424242;                             // EA Magic Number
-input int      InpPollInterval = 10;                                 // Poll Interval (Seconds)
+input string   InpServerUrl    = "https://forexmind-ai-pro.onrender.com"; // ForexMind AI Server URL
+input double   InpRiskPercent  = 1.0;                                     // Risk Per Trade (%)
+input double   InpMinConf      = 55.0;                                    // Minimum AI Confidence (%)
+input int      InpMagicNumber  = 424242;                                  // EA Magic Number
+input int      InpPollInterval = 5;                                       // Poll Interval (Seconds)
 
 // Global Objects
 CTrade         m_trade;
@@ -29,7 +29,7 @@ int OnInit()
 {
    m_trade.SetExpertMagicNumber(InpMagicNumber);
    EventSetTimer(InpPollInterval);
-   Print("ForexMind AI EA Initialized successfully for ", Symbol(), " Account #", AccountInfoInteger(ACCOUNT_LOGIN));
+   Print("⚡ ForexMind AI EA Initialized for ", Symbol(), " Account #", AccountInfoInteger(ACCOUNT_LOGIN));
    SendAccountPing();
    return(INIT_SUCCEEDED);
 }
@@ -99,7 +99,7 @@ void FetchAndExecuteSignal()
    }
    else
    {
-      Print("WebRequest failed. Error code: ", res, ". Verify WebRequest URL permission in MT5 Options.");
+      Print("WebRequest failed. HTTP code: ", res, ". Verify URL in MT5 Tools -> Options -> Expert Advisors -> WebRequest.");
    }
 }
 
@@ -117,20 +117,30 @@ void ProcessJsonResponse(string json)
    Comment(StringFormat("⚡ ForexMind AI Connected\nAccount #%d (%s)\nSymbol: %s | Signal: %s (%.1f%% Conf)\nSL: %.5f | TP: %.5f | Lot: %.2f",
                         AccountInfoInteger(ACCOUNT_LOGIN), AccountInfoString(ACCOUNT_COMPANY), Symbol(), signal, confidence, sl, tp, lot));
 
-   // Execute Trade if signal is valid and no open position exists
-   if (PositionsTotal() == 0 && confidence >= InpMinConf)
+   // Execute Trade if signal is valid and confidence threshold is met
+   if (signal == "BUY" || signal == "SELL")
    {
-      if (signal == "BUY" && m_last_signal != "BUY")
+      if (confidence >= InpMinConf)
       {
-         Print("Executing BUY order for ", Symbol(), " Lot: ", lot);
-         m_trade.Buy(lot, Symbol(), 0, sl, tp, "ForexMind AI BUY");
-         m_last_signal = "BUY";
+         if (PositionsTotal() == 0)
+         {
+            if (signal == "BUY" && m_last_signal != "BUY")
+            {
+               Print("⚡ Executing BUY Order for ", Symbol(), " Lot: ", lot, " SL: ", sl, " TP: ", tp);
+               m_trade.Buy(lot, Symbol(), 0, sl, tp, "ForexMind AI BUY");
+               m_last_signal = "BUY";
+            }
+            else if (signal == "SELL" && m_last_signal != "SELL")
+            {
+               Print("⚡ Executing SELL Order for ", Symbol(), " Lot: ", lot, " SL: ", sl, " TP: ", tp);
+               m_trade.Sell(lot, Symbol(), 0, sl, tp, "ForexMind AI SELL");
+               m_last_signal = "SELL";
+            }
+         }
       }
-      else if (signal == "SELL" && m_last_signal != "SELL")
+      else
       {
-         Print("Executing SELL order for ", Symbol(), " Lot: ", lot);
-         m_trade.Sell(lot, Symbol(), 0, sl, tp, "ForexMind AI SELL");
-         m_last_signal = "SELL";
+         Print("Signal ", signal, " received (Confidence ", confidence, "%), but below minimum threshold ", InpMinConf, "% - Trade Skipped Safely.");
       }
    }
 }

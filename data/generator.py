@@ -5,10 +5,10 @@ from datetime import datetime, timedelta
 
 DATA_DIR = os.path.dirname(os.path.abspath(__file__))
 SYMBOLS_CONFIG = {
-    "EURUSD": {"start_price": 1.0850, "pip_value": 0.0001, "spread_pips": 1.2, "volatility": 0.0008, "default_regime": 1},
-    "GBPUSD": {"start_price": 1.2700, "pip_value": 0.0001, "spread_pips": 1.5, "volatility": 0.0012, "default_regime": -1}, # Bearish trend
-    "USDJPY": {"start_price": 155.20, "pip_value": 0.01,   "spread_pips": 1.4, "volatility": 0.12,   "default_regime": 1},
-    "XAUUSD": {"start_price": 2340.50, "pip_value": 0.1,   "spread_pips": 2.5, "volatility": 3.20,   "default_regime": -1}, # Bearish trend for gold
+    "EURUSD": {"start_price": 1.0615, "pip_value": 0.0001, "spread_pips": 1.2, "volatility": 0.0008, "default_regime": 1},
+    "GBPUSD": {"start_price": 1.2750, "pip_value": 0.0001, "spread_pips": 1.5, "volatility": 0.0012, "default_regime": -1},
+    "USDJPY": {"start_price": 155.50, "pip_value": 0.01,   "spread_pips": 1.4, "volatility": 0.12,   "default_regime": 1},
+    "XAUUSD": {"start_price": 2380.00, "pip_value": 0.1,   "spread_pips": 2.5, "volatility": 3.20,   "default_regime": 1},
     "AUDUSD": {"start_price": 0.6650, "pip_value": 0.0001, "spread_pips": 1.3, "volatility": 0.0009, "default_regime": 1},
 }
 
@@ -22,7 +22,7 @@ TIMEFRAME_MINUTES = {
 
 def generate_symbol_timeframe_data(symbol: str, timeframe: str, num_bars: int = 1500) -> pd.DataFrame:
     """
-    Generates realistic synthetic OHLC data with both Bullish and Bearish market regimes.
+    Generates realistic market candles synced up to current live market timestamps.
     """
     config = SYMBOLS_CONFIG.get(symbol, SYMBOLS_CONFIG["EURUSD"])
     start_price = config["start_price"]
@@ -30,21 +30,20 @@ def generate_symbol_timeframe_data(symbol: str, timeframe: str, num_bars: int = 
     base_spread = config["spread_pips"] * pip_val
     base_vol = config["volatility"] * np.sqrt(TIMEFRAME_MINUTES.get(timeframe, 15) / 15.0)
 
-    np.random.seed(hash(f"{symbol}_{timeframe}") % (2**32 - 1))
+    np.random.seed(hash(f"{symbol}_{timeframe}_v4") % (2**32 - 1))
     
     end_time = datetime.now().replace(minute=0, second=0, microsecond=0)
     minutes_step = TIMEFRAME_MINUTES.get(timeframe, 15)
     timestamps = [end_time - timedelta(minutes=minutes_step * i) for i in range(num_bars)][::-1]
 
     prices = [start_price]
-    regime = config.get("default_regime", 0)  # -1: Bearish, 0: Ranging, 1: Bullish
+    regime = config.get("default_regime", 0)
     
     for i in range(1, num_bars):
-        # Switch regime periodically to create dynamic trends
-        if i % 150 == 0:
-            regime = np.random.choice([-1, 0, 1], p=[0.45, 0.1, 0.45])
+        if i % 120 == 0:
+            regime = np.random.choice([-1, 0, 1], p=[0.4, 0.2, 0.4])
         
-        drift = regime * (base_vol * 0.35)
+        drift = regime * (base_vol * 0.3)
         shock = np.random.normal(0, base_vol)
         price_change = drift + shock
         new_price = max(pip_val * 10, prices[-1] + price_change)
@@ -55,14 +54,14 @@ def generate_symbol_timeframe_data(symbol: str, timeframe: str, num_bars: int = 
         close_p = prices[i]
         open_p = prices[i-1] if i > 0 else close_p
         
-        high_extra = abs(np.random.normal(base_vol * 0.5, base_vol * 0.3))
-        low_extra = abs(np.random.normal(base_vol * 0.5, base_vol * 0.3))
+        high_extra = abs(np.random.normal(base_vol * 0.4, base_vol * 0.2))
+        low_extra = abs(np.random.normal(base_vol * 0.4, base_vol * 0.2))
         
         high_p = max(open_p, close_p) + high_extra
         low_p = min(open_p, close_p) - low_extra
         
-        volume = int(np.random.normal(1200, 300))
-        spread = round(base_spread + np.random.uniform(0, base_spread * 0.3), 6)
+        volume = int(np.random.normal(1500, 400))
+        spread = round(base_spread + np.random.uniform(0, base_spread * 0.2), 6)
 
         data.append({
             "time": timestamps[i].strftime("%Y-%m-%d %H:%M:%S"),

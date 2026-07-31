@@ -1,7 +1,4 @@
 time,currency,event,impact
-2026-07-20 13:30:00,USD,NFP - Non-Farm Payrolls,High
-2026-07-20 13:30:00,USD,CPI Inflation Rate MoM,High
-2026-07-20 13:30:00,USD,FOMC Interest Rate Decision,High
 2026-07-21 13:30:00,USD,NFP - Non-Farm Payrolls,High
 2026-07-21 13:30:00,USD,CPI Inflation Rate MoM,High
 2026-07-21 13:30:00,USD,FOMC Interest Rate Decision,High
@@ -59,3 +56,6 @@ time,currency,event,impact
 2026-08-08 13:30:00,USD,NFP - Non-Farm Payrolls,High
 2026-08-08 13:30:00,USD,CPI Inflation Rate MoM,High
 2026-08-08 13:30:00,USD,FOMC Interest Rate Decision,High
+2026-08-09 13:30:00,USD,NFP - Non-Farm Payrolls,High
+2026-08-09 13:30:00,USD,CPI Inflation Rate MoM,High
+2026-08-09 13:30:00,USD,FOMC Interest Rate Decision,High
