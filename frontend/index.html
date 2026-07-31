@@ -41,7 +41,9 @@
         </nav>
 
         <div class="header-actions">
-            <div id="ws-status-badge" class="badge-live offline">CONNECTING</div>
+            <!-- Connected MT5 Accounts Badge -->
+            <div id="accounts-count-badge" class="badge-live offline">🔌 0 MT5 Active</div>
+            <div id="ws-status-badge" class="badge-live offline">LIVE</div>
             <button id="theme-toggle-btn" class="theme-toggle-btn">🌙 Dark</button>
         </div>
     </header>
@@ -93,7 +95,7 @@
     <!-- Main Container -->
     <main class="app-container">
 
-        <!-- Section 1: Trading Terminal (ACTIVE BY DEFAULT) -->
+        <!-- Section 1: Trading Terminal -->
         <section id="sec-signal" class="app-section active">
             <div class="grid-main">
                 <!-- Left: Hero Signal Card & XAI -->
@@ -148,7 +150,7 @@
             </div>
         </section>
 
-        <!-- Section 2: Market Matrix (HIDDEN BY DEFAULT) -->
+        <!-- Section 2: Market Matrix -->
         <section id="sec-matrix" class="app-section">
             <div class="card-panel">
                 <div class="card-panel-head">Multi-Timeframe Alignment Matrix</div>
@@ -169,7 +171,7 @@
             </div>
         </section>
 
-        <!-- Section 3: Risk Manager (HIDDEN BY DEFAULT) -->
+        <!-- Section 3: Risk Manager -->
         <section id="sec-risk" class="app-section">
             <div class="card-panel" style="max-width: 550px; margin: 0 auto;">
                 <div class="card-panel-head">Position Risk & Lot Size Calculator</div>
@@ -203,7 +205,7 @@
             </div>
         </section>
 
-        <!-- Section 4: Backtest Studio (HIDDEN BY DEFAULT) -->
+        <!-- Section 4: Backtest Studio -->
         <section id="sec-backtest" class="app-section">
             <div style="margin-bottom: 16px;">
                 <button id="btn-run-backtest" class="btn-action" style="max-width: 250px;">Run Strategy Backtest</button>
@@ -255,7 +257,7 @@
             </div>
         </section>
 
-        <!-- Section 5: AI & Sentiment Radar (HIDDEN BY DEFAULT) -->
+        <!-- Section 5: AI Radar -->
         <section id="sec-news" class="app-section">
             <div class="card-panel">
                 <div class="card-panel-head">📰 Financial NLP News Radar</div>
@@ -266,8 +268,38 @@
             </div>
         </section>
 
-        <!-- Section 6: Integrations & EA Download (HIDDEN BY DEFAULT) -->
+        <!-- Section 6: Integrations & Connected Accounts -->
         <section id="sec-ea" class="app-section">
+            <!-- Connected MT5 Accounts Monitor -->
+            <div class="card-panel" style="margin-bottom: 20px;">
+                <div class="card-panel-head">
+                    <span>🔌 Connected MT5 Accounts Status</span>
+                    <span id="account-status-count" class="status-badge NEUTRAL">0 Connected</span>
+                </div>
+                <div class="table-wrapper">
+                    <table class="mobile-table">
+                        <thead>
+                            <tr>
+                                <th>Account Login</th>
+                                <th>Broker Company</th>
+                                <th>Balance ($)</th>
+                                <th>Equity ($)</th>
+                                <th>Leverage</th>
+                                <th>Status</th>
+                                <th>Last Ping</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mt5-accounts-table-body">
+                            <tr>
+                                <td colspan="7" style="text-align: center; color: var(--text-muted);">
+                                    No MT5 accounts connected yet. Download the EA below and add it to your MetaTrader 5 terminal.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <div class="grid-2">
                 <div class="card-panel">
                     <div class="card-panel-head">📥 MetaTrader 5 EA Script</div>
@@ -297,7 +329,7 @@
 
     </main>
 
-    <!-- Mobile Bottom Navigation Bar (Appears on Mobile Phones Only) -->
+    <!-- Mobile Bottom Navigation Bar -->
     <nav class="bottom-nav">
         <button class="nav-item active" data-sec="sec-signal">
             <span class="nav-icon">⚡</span>

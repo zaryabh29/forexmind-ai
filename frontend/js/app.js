@@ -6,7 +6,11 @@ async function initApp() {
     initThemeToggle();
     setupTabSwitching();
     await loadSymbolOptions();
+    await checkConnectedAccounts();
     
+    // Periodically update connected accounts status every 10 seconds
+    setInterval(checkConnectedAccounts, 10000);
+
     // Connect WebSocket Live Stream
     if (typeof marketWS !== "undefined") {
         marketWS.connect();
@@ -60,14 +64,12 @@ function initThemeToggle() {
 }
 
 function setupTabSwitching() {
-    // Select both desktop top tabs (.tab-btn) and mobile bottom nav items (.nav-item)
     const allTabs = document.querySelectorAll(".tab-btn, .nav-item");
     
     allTabs.forEach(btn => {
         btn.addEventListener("click", () => {
             const targetSec = btn.getAttribute("data-sec");
 
-            // Update active state on matching buttons
             allTabs.forEach(b => {
                 if (b.getAttribute("data-sec") === targetSec) {
                     b.classList.add("active");
@@ -76,7 +78,6 @@ function setupTabSwitching() {
                 }
             });
 
-            // Hide all sections, show only active section
             document.querySelectorAll(".app-section").forEach(sec => {
                 sec.classList.remove("active");
             });
@@ -89,7 +90,10 @@ function setupTabSwitching() {
             if (targetSec === "sec-matrix") loadMTFMatrix();
             if (targetSec === "sec-backtest") updateBacktest();
             if (targetSec === "sec-news") loadSentimentRadar();
-            if (targetSec === "sec-ea") loadMQL5Code();
+            if (targetSec === "sec-ea") {
+                loadMQL5Code();
+                checkConnectedAccounts();
+            }
         });
     });
 }
@@ -119,6 +123,58 @@ async function loadSymbolOptions() {
         }
     } catch (err) {
         console.error("Failed to load symbols:", err);
+    }
+}
+
+async function checkConnectedAccounts() {
+    try {
+        const data = await API.getSymbols();
+        const count = data.connected_count || 0;
+        const accounts = data.connected_accounts || [];
+
+        // Update Header Badge
+        const badge = document.getElementById("accounts-count-badge");
+        if (badge) {
+            badge.textContent = `🔌 ${count} MT5 Active`;
+            badge.className = count > 0 ? "badge-live online" : "badge-live offline";
+        }
+
+        // Update Integrations Tab Badge & Table
+        const statusCount = document.getElementById("account-status-count");
+        if (statusCount) {
+            statusCount.textContent = `${count} Connected Account${count === 1 ? '' : 's'}`;
+            statusCount.className = count > 0 ? "status-badge BUY" : "status-badge NEUTRAL";
+        }
+
+        const tbody = document.getElementById("mt5-accounts-table-body");
+        if (tbody) {
+            if (accounts.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: var(--text-muted);">
+                            No MT5 accounts connected yet. Download the EA below and add it to your MetaTrader 5 terminal.
+                        </td>
+                    </tr>
+                `;
+            } else {
+                tbody.innerHTML = "";
+                accounts.forEach(acc => {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td><strong>#${acc.account_id}</strong></td>
+                        <td>${acc.broker}</td>
+                        <td>$${acc.balance.toFixed(2)}</td>
+                        <td>$${acc.equity.toFixed(2)}</td>
+                        <td>1:${acc.leverage}</td>
+                        <td><span class="status-badge ${acc.status === 'ONLINE' ? 'BUY' : 'SELL'}">${acc.status}</span></td>
+                        <td>${acc.last_seen}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+    } catch (err) {
+        console.error("Error checking connected accounts:", err);
     }
 }
 

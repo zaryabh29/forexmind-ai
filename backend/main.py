@@ -99,6 +99,13 @@ class MT5ExecuteRequest(BaseModel):
     stop_loss: float = 0.0
     take_profit: float = 0.0
 
+class MT5PingRequest(BaseModel):
+    account_id: str
+    broker: str = "MT5 Broker"
+    balance: float = 1000.0
+    equity: float = 1000.0
+    leverage: int = 100
+
 class AuthRequest(BaseModel):
     username: str
     password: str
@@ -108,13 +115,33 @@ class AuthRequest(BaseModel):
 
 @app.get("/api/symbols")
 def get_symbols():
+    accounts = mt5_bridge.get_connected_accounts()
     return {
         "symbols": list(SYMBOLS_CONFIG.keys()),
         "timeframes": ["M5", "M15", "H1", "H4"],
         "directions": ["AUTO", "BUY", "SELL"],
         "config": SYMBOLS_CONFIG,
         "db_stats": get_db_stats(),
-        "mt5_status": mt5_bridge.get_account_info()
+        "mt5_status": mt5_bridge.get_account_info(),
+        "connected_accounts": accounts,
+        "connected_count": len([a for a in accounts if a["status"] == "ONLINE"])
+    }
+
+@app.post("/api/mt5/ping")
+def ping_mt5_account(req: MT5PingRequest):
+    mt5_bridge.register_account_ping(
+        account_id=req.account_id,
+        broker=req.broker,
+        balance=req.balance,
+        equity=req.equity,
+        leverage=req.leverage
+    )
+    accounts = mt5_bridge.get_connected_accounts()
+    return {
+        "status": "REGISTERED",
+        "account_id": req.account_id,
+        "connected_accounts": accounts,
+        "connected_count": len([a for a in accounts if a["status"] == "ONLINE"])
     }
 
 @app.post("/api/signal")

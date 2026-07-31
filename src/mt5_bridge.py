@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 
 try:
     import MetaTrader5 as mt5
@@ -10,10 +10,38 @@ except ImportError:
 class MetaTrader5Bridge:
     def __init__(self):
         self.connected = False
+        self.active_accounts = {}  # {account_id: {broker, balance, equity, last_ping}}
         if HAS_MT5:
             self.connected = mt5.initialize()
 
+    def register_account_ping(self, account_id: str, broker: str = "Unknown Broker", balance: float = 1000.0, equity: float = 1000.0, leverage: int = 100):
+        self.active_accounts[str(account_id)] = {
+            "account_id": str(account_id),
+            "broker": broker,
+            "balance": balance,
+            "equity": equity,
+            "leverage": leverage,
+            "last_ping": datetime.now()
+        }
+
+    def get_connected_accounts(self):
+        now = datetime.now()
+        active = []
+        for acc_id, data in self.active_accounts.items():
+            is_online = (now - data["last_ping"]) < timedelta(seconds=60)
+            active.append({
+                "account_id": data["account_id"],
+                "broker": data["broker"],
+                "balance": data["balance"],
+                "equity": data["equity"],
+                "leverage": data["leverage"],
+                "status": "ONLINE" if is_online else "OFFLINE",
+                "last_seen": data["last_ping"].strftime("%H:%M:%S")
+            })
+        return active
+
     def get_account_info(self):
+        accounts = self.get_connected_accounts()
         if self.connected and HAS_MT5:
             info = mt5.account_info()
             if info:
@@ -24,7 +52,9 @@ class MetaTrader5Bridge:
                     "free_margin": info.margin_free,
                     "leverage": info.leverage,
                     "broker": info.company,
-                    "mode": "LIVE_MT5"
+                    "mode": "LIVE_MT5",
+                    "connected_accounts": accounts,
+                    "connected_count": len([a for a in accounts if a["status"] == "ONLINE"])
                 }
         return {
             "balance": 1000.0,
@@ -33,7 +63,9 @@ class MetaTrader5Bridge:
             "free_margin": 1000.0,
             "leverage": 100,
             "broker": "Simulated Demo Broker",
-            "mode": "SIMULATION"
+            "mode": "SIMULATION",
+            "connected_accounts": accounts,
+            "connected_count": len([a for a in accounts if a["status"] == "ONLINE"])
         }
 
     def fetch_live_candles(self, symbol: str = "EURUSD", timeframe: str = "M15", num_bars: int = 500):
@@ -77,7 +109,6 @@ class MetaTrader5Bridge:
             else:
                 return {"status": "FAILED", "error": result.comment}
 
-        # Simulated fallback execution
         return {
             "status": "SIMULATED_SUCCESS",
             "ticket": int(datetime.now().timestamp()),
