@@ -5,8 +5,8 @@
 //+------------------------------------------------------------------+
 #property copyright "ForexMind AI Team"
 #property link      "https://github.com/forexmind-ai"
-#property version   "3.00"
-#property description "Automated MetaTrader 5 Execution EA & Account Status Monitor for ForexMind AI"
+#property version   "3.50"
+#property description "Automated MetaTrader 5 Execution EA for ForexMind AI"
 
 #include <Trade\Trade.mqh>
 
@@ -19,7 +19,6 @@ input int      InpPollInterval = 5;                                       // Pol
 
 // Global Objects
 CTrade         m_trade;
-datetime       m_last_poll_time = 0;
 string         m_last_signal    = "NONE";
 
 //+------------------------------------------------------------------+
@@ -29,7 +28,7 @@ int OnInit()
 {
    m_trade.SetExpertMagicNumber(InpMagicNumber);
    EventSetTimer(InpPollInterval);
-   Print("⚡ ForexMind AI EA Initialized for ", Symbol(), " Account #", AccountInfoInteger(ACCOUNT_LOGIN));
+   Print("⚡ ForexMind AI EA Active for Chart Symbol: ", Symbol(), " Account #", AccountInfoInteger(ACCOUNT_LOGIN));
    SendAccountPing();
    return(INIT_SUCCEEDED);
 }
@@ -75,14 +74,23 @@ void SendAccountPing()
 }
 
 //+------------------------------------------------------------------+
-//| Fetch signal from API and execute on MT5 terminal                 |
+//| Fetch signal for THIS chart symbol and execute trade              |
 //+------------------------------------------------------------------+
 void FetchAndExecuteSignal()
 {
+   string currentSym = Symbol();
+   // Normalize symbol name (e.g. EURUSD.r or EURUSD -> EURUSD)
+   string cleanSym = currentSym;
+   if (StringFind(cleanSym, "EUR") >= 0) cleanSym = "EURUSD";
+   else if (StringFind(cleanSym, "GBP") >= 0) cleanSym = "GBPUSD";
+   else if (StringFind(cleanSym, "JPY") >= 0) cleanSym = "USDJPY";
+   else if (StringFind(cleanSym, "XAU") >= 0 || StringFind(cleanSym, "GOLD") >= 0) cleanSym = "XAUUSD";
+   else if (StringFind(cleanSym, "AUD") >= 0) cleanSym = "AUDUSD";
+
    string sigUrl  = InpServerUrl + "/api/signal";
    string headers = "Content-Type: application/json\r\n";
    string payload = StringFormat("{\"symbol\":\"%s\",\"main_timeframe\":\"M15\",\"account_balance\":%.2f,\"risk_percent\":%.1f,\"min_confidence\":%.2f}",
-                                 Symbol(), AccountInfoDouble(ACCOUNT_BALANCE), InpRiskPercent, InpMinConf / 100.0);
+                                 cleanSym, AccountInfoDouble(ACCOUNT_BALANCE), InpRiskPercent, InpMinConf / 100.0);
    
    char post_data[];
    char result[];
@@ -95,18 +103,18 @@ void FetchAndExecuteSignal()
    if (res == 200)
    {
       string response_str = CharArrayToString(result);
-      ProcessJsonResponse(response_str);
+      ProcessJsonResponse(response_str, currentSym);
    }
    else
    {
-      Print("WebRequest failed. HTTP code: ", res, ". Verify URL in MT5 Tools -> Options -> Expert Advisors -> WebRequest.");
+      Print("WebRequest failed. Code: ", res, ". Check URL in MT5 Tools -> Options -> Expert Advisors.");
    }
 }
 
 //+------------------------------------------------------------------+
-//| Simple JSON parser & trade execution                              |
+//| Process signal and execute position                              |
 //+------------------------------------------------------------------+
-void ProcessJsonResponse(string json)
+void ProcessJsonResponse(string json, string tradeSymbol)
 {
    string signal = ExtractJsonValue(json, "final_signal");
    double confidence = StringToDouble(ExtractJsonValue(json, "confidence_pct"));
@@ -114,10 +122,10 @@ void ProcessJsonResponse(string json)
    double tp = StringToDouble(ExtractJsonValue(json, "take_profit"));
    double lot = StringToDouble(ExtractJsonValue(json, "suggested_lot"));
 
-   Comment(StringFormat("⚡ ForexMind AI Connected\nAccount #%d (%s)\nSymbol: %s | Signal: %s (%.1f%% Conf)\nSL: %.5f | TP: %.5f | Lot: %.2f",
-                        AccountInfoInteger(ACCOUNT_LOGIN), AccountInfoString(ACCOUNT_COMPANY), Symbol(), signal, confidence, sl, tp, lot));
+   Comment(StringFormat("⚡ ForexMind AI Connected\nAccount #%d (%s)\nChart: %s | Signal: %s (%.1f%% Conf)\nSL: %.5f | TP: %.5f | Lot: %.2f",
+                        AccountInfoInteger(ACCOUNT_LOGIN), AccountInfoString(ACCOUNT_COMPANY), tradeSymbol, signal, confidence, sl, tp, lot));
 
-   // Execute Trade if signal is valid and confidence threshold is met
+   // Execute Trade if signal is valid (BUY/SELL)
    if (signal == "BUY" || signal == "SELL")
    {
       if (confidence >= InpMinConf)
@@ -126,21 +134,21 @@ void ProcessJsonResponse(string json)
          {
             if (signal == "BUY" && m_last_signal != "BUY")
             {
-               Print("⚡ Executing BUY Order for ", Symbol(), " Lot: ", lot, " SL: ", sl, " TP: ", tp);
-               m_trade.Buy(lot, Symbol(), 0, sl, tp, "ForexMind AI BUY");
+               Print("⚡ Executing BUY Order on ", tradeSymbol, " Lot: ", lot, " SL: ", sl, " TP: ", tp);
+               m_trade.Buy(lot, tradeSymbol, 0, sl, tp, "ForexMind AI BUY");
                m_last_signal = "BUY";
             }
             else if (signal == "SELL" && m_last_signal != "SELL")
             {
-               Print("⚡ Executing SELL Order for ", Symbol(), " Lot: ", lot, " SL: ", sl, " TP: ", tp);
-               m_trade.Sell(lot, Symbol(), 0, sl, tp, "ForexMind AI SELL");
+               Print("⚡ Executing SELL Order on ", tradeSymbol, " Lot: ", lot, " SL: ", sl, " TP: ", tp);
+               m_trade.Sell(lot, tradeSymbol, 0, sl, tp, "ForexMind AI SELL");
                m_last_signal = "SELL";
             }
          }
       }
       else
       {
-         Print("Signal ", signal, " received (Confidence ", confidence, "%), but below minimum threshold ", InpMinConf, "% - Trade Skipped Safely.");
+         Print("Signal ", signal, " received for ", tradeSymbol, " (Conf ", confidence, "%), skipped below threshold ", InpMinConf, "%");
       }
    }
 }

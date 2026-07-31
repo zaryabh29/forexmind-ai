@@ -8,18 +8,18 @@ async function initApp() {
     await loadSymbolOptions();
     await checkConnectedAccounts();
     
-    // Auto-refresh live candles & signal analysis every 4 seconds
     setInterval(updateSignalAnalysis, 4000);
     setInterval(checkConnectedAccounts, 10000);
 
-    // Connect WebSocket Live Stream
     if (typeof marketWS !== "undefined") {
         marketWS.connect();
     }
 
-    // Event Listeners
     const btnAnalyze = document.getElementById("btn-analyze");
     if (btnAnalyze) btnAnalyze.addEventListener("click", updateSignalAnalysis);
+
+    const btnExecDirect = document.getElementById("btn-exec-mt5-direct");
+    if (btnExecDirect) btnExecDirect.addEventListener("click", executeDirectMT5Order);
 
     const selectSymbol = document.getElementById("select-symbol");
     if (selectSymbol) selectSymbol.addEventListener("change", updateSignalAnalysis);
@@ -39,7 +39,6 @@ async function initApp() {
     const btnSendTg = document.getElementById("btn-send-tg");
     if (btnSendTg) btnSendTg.addEventListener("click", sendTelegramTestAlert);
 
-    // Initial Signal Trigger
     await updateSignalAnalysis();
 }
 
@@ -247,6 +246,26 @@ async function updateSignalAnalysis() {
 
     } catch (err) {
         console.error("Error fetching signal:", err);
+    }
+}
+
+async function executeDirectMT5Order() {
+    const symbolEl = document.getElementById("select-symbol");
+    const statusDiv = document.getElementById("mt5-exec-status");
+    const symbol = symbolEl ? symbolEl.value : "EURUSD";
+
+    if (!statusDiv) return;
+
+    try {
+        statusDiv.innerHTML = `<span style="color: var(--primary);">⏳ Sending Trade Order to MT5...</span>`;
+        const sigRes = await API.getSignal(symbol, "M15", 1000, 1.0, 0.55);
+        const sigType = sigRes.final_signal.includes("BUY") ? "BUY" : (sigRes.final_signal.includes("SELL") ? "SELL" : "BUY");
+
+        const res = await API.executeMT5Order(symbol, sigType, sigRes.suggested_lot || 0.01, sigRes.stop_loss || 0, sigRes.take_profit || 0);
+        
+        statusDiv.innerHTML = `<span style="color: var(--buy-color); font-weight: bold;">⚡ Order Triggered! Status: ${res.status} (Ticket #${res.ticket || 'Active'})</span>`;
+    } catch (err) {
+        statusDiv.innerHTML = `<span style="color: var(--sell-color);">Order execution failed. Verify MT5 connection.</span>`;
     }
 }
 
